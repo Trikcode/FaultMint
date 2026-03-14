@@ -108,12 +108,14 @@ export function ReleaseDetailClient({
 }: ReleaseDetailClientProps) {
   const [release, setRelease] = useState<ReleaseDetail>(initialRelease)
   const [analyzing, setAnalyzing] = useState(false)
+  const [lastAnalyzedAt, setLastAnalyzedAt] = useState<Date | null>(null)
   const { addToast } = useToast()
 
   const { version, name } = parseVersionFromTitle(release.title)
   const owner = parseOwnerFromDescription(release.description)
 
   const handleAnalyze = useCallback(async () => {
+    if (analyzing) return // Guard against concurrent analysis calls
     setAnalyzing(true)
     try {
       const res = await fetch(`/api/releases/${release.id}/analyze`, {
@@ -129,12 +131,13 @@ export function ReleaseDetailClient({
 
       const updated = (await res.json()) as ReleaseDetail
       setRelease(updated)
+      setLastAnalyzedAt(new Date())
       addToast('Analysis complete', 'success')
     } catch {
       addToast('Network error during analysis', 'error')
     }
     setAnalyzing(false)
-  }, [release.id, addToast])
+  }, [analyzing, release.id, addToast])
 
   const handleRiskToggle = useCallback(
     async (riskId: string) => {
@@ -273,7 +276,7 @@ export function ReleaseDetailClient({
           </div>
         </div>
 
-        <div className='mt-5 border-t border-gray-100 pt-5'>
+        <div className='mt-5 border-t border-gray-100 pt-5 flex items-center gap-4'>
           <Button
             onClick={handleAnalyze}
             loading={analyzing}
@@ -286,6 +289,11 @@ export function ReleaseDetailClient({
                 ? 'Run Analysis'
                 : 'Re-run Analysis'}
           </Button>
+          {lastAnalyzedAt ? (
+            <span className='text-xs text-gray-400'>
+              Last analyzed at {lastAnalyzedAt.toLocaleTimeString()}
+            </span>
+          ) : null}
         </div>
       </Card>
 
