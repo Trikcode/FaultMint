@@ -1,26 +1,211 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-brand: 99 102 241;
+    --color-brand-dark: 79 70 229;
+    --color-surface: 255 255 255;
+    --color-surface-raised: 249 250 251;
+    --color-border: 229 231 235;
+    --color-text-primary: 17 24 39;
+    --color-text-secondary: 107 114 128;
+  }
+
+  *,
+  *::before,
+  *::after {
+    border-color: rgb(var(--color-border));
+  }
+
+  body {
+    color: rgb(var(--color-text-primary));
+    background-color: rgb(var(--color-surface-raised));
+  }
+
+  ::selection {
+    background-color: rgb(var(--color-brand) / 0.15);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2;
+  }
+
+  .card-shadow {
+    box-shadow:
+      0 1px 3px 0 rgb(0 0 0 / 0.04),
+      0 1px 2px -1px rgb(0 0 0 / 0.06);
+  }
+
+  .card-shadow-hover {
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.06),
+      0 2px 4px -2px rgb(0 0 0 / 0.06);
+  }
+
+  .hero-grid {
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+  }
+
+  .flow-line {
+    position: relative;
+  }
+
+  .flow-dot {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: #6366f1;
+    box-shadow: 0 0 8px 3px rgba(99, 102, 241, 0.45);
+    animation: flowDot 3s linear infinite;
+  }
+
+  .mock-risk-row {
+    @apply flex items-center gap-2 rounded-md px-2.5 py-1.5;
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.25s ease-out;
+  }
+
+  .animate-toast-in {
+    animation: toastIn 0.3s ease-out;
+  }
+
+  .animate-toast-out {
+    animation: toastOut 0.2s ease-in forwards;
+  }
+
+  .animate-hero-float {
+    animation: heroFloat 5s ease-in-out infinite;
+  }
+
+  .score-pulse {
+    animation: scorePulse 2.5s ease-in-out infinite;
+  }
+
+  .stagger-1 {
+    animation: fadeSlideUp 0.55s ease-out both;
+  }
+  .stagger-2 {
+    animation: fadeSlideUp 0.55s ease-out 0.07s both;
+  }
+  .stagger-3 {
+    animation: fadeSlideUp 0.55s ease-out 0.14s both;
+  }
+  .stagger-4 {
+    animation: fadeSlideUp 0.55s ease-out 0.21s both;
+  }
+  .stagger-5 {
+    animation: fadeSlideUp 0.55s ease-out 0.28s both;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+@keyframes heroFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0.5deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(-0.5deg);
+  }
+}
+
+@keyframes flowDot {
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scorePulse {
+  0%,
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    opacity: 0.7;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+  }
 }

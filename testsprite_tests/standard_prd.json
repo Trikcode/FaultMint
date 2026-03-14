@@ -1,0 +1,108 @@
+{
+  "product_name": "FaultMint",
+  "description": "AI-powered pre-mortem release analysis tool that identifies failure risks before shipping",
+  "code_summary": {
+    "version": "2",
+    "type": "frontend",
+    "tech_stack": [
+      "TypeScript",
+      "Next.js 16 (App Router)",
+      "Tailwind CSS v4",
+      "Prisma ORM (SQLite)",
+      "Zod",
+      "OpenAI SDK"
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "description": "Landing/home page with hero section and CTA links",
+        "auth_required": false
+      },
+      {
+        "path": "/dashboard",
+        "description": "Dashboard listing all releases",
+        "auth_required": false
+      },
+      {
+        "path": "/releases/new",
+        "description": "Create new release form",
+        "auth_required": false
+      },
+      {
+        "path": "/releases/[id]",
+        "description": "Release detail page",
+        "auth_required": false
+      }
+    ]
+  },
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "title": "Landing Page",
+      "description": "The landing page must render hero section with product description, step-by-step pipeline, and CTA links to Dashboard and Create Release pages"
+    },
+    {
+      "id": "REQ-002",
+      "title": "Dashboard - Release List",
+      "description": "Dashboard must show all releases with title, status badge, verdict badge, risk score, checklist progress, and creation date. Must show empty state when no releases exist."
+    },
+    {
+      "id": "REQ-003",
+      "title": "Create Release Form",
+      "description": "Form must require title and release notes. Version and owner are optional. On submit, creates a release in DRAFT status with NEEDS_ATTENTION verdict and risk score 0, then redirects to release detail page."
+    },
+    {
+      "id": "REQ-004",
+      "title": "Release Detail - Header",
+      "description": "Release detail must show title, version badge (if present), owner (if present), creation date, status badge, verdict badge, and risk score."
+    },
+    {
+      "id": "REQ-005",
+      "title": "Release Detail - Analysis",
+      "description": "Run Analysis button must trigger AI pre-mortem analysis, show loading state, then display identified risks and mitigation checklist items. Re-run clears old data."
+    },
+    {
+      "id": "REQ-006",
+      "title": "Risk Management",
+      "description": "Risks must show severity badges (CRITICAL, HIGH, MEDIUM, LOW). Users can toggle risks as resolved. Risk score and verdict update after each toggle."
+    },
+    {
+      "id": "REQ-007",
+      "title": "Mitigation Checklist",
+      "description": "Checklist items can be toggled complete/incomplete. Progress count and verdict update accordingly."
+    },
+    {
+      "id": "REQ-008",
+      "title": "Approvals",
+      "description": "Three roles required: ENGINEERING, QA, PRODUCT. Users can submit APPROVED or REJECTED with optional comment. All three must be APPROVED for READY verdict."
+    },
+    {
+      "id": "REQ-009",
+      "title": "Timeline",
+      "description": "Chronological log of all release events including CREATED, ANALYZED, RISK_RESOLVED, CHECKLIST_COMPLETED, APPROVAL_UPDATED, STATUS_CHANGED, VERDICT_CHANGED."
+    },
+    {
+      "id": "REQ-010",
+      "title": "Form Validation",
+      "description": "Create release form must show field-level errors for missing required fields and display error banner on API failure."
+    }
+  ],
+  "acceptance_criteria": {
+    "create_release": [
+      "Title is required",
+      "Release notes are required",
+      "New release starts as DRAFT/NEEDS_ATTENTION/score 0",
+      "User is redirected to release detail page after creation"
+    ],
+    "run_analysis": [
+      "Clears previous risks and checklist items",
+      "Generates new risks and checklist items",
+      "Recomputes status, verdict, and risk score"
+    ],
+    "dashboard": [
+      "Lists all releases ordered by creation date",
+      "Shows empty state when no releases exist",
+      "Each release links to detail page"
+    ]
+  }
+}

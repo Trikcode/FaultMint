@@ -1,0 +1,172 @@
+version: '2'
+type: frontend
+tech_stack:
+  - TypeScript
+  - Next.js 16 (App Router)
+  - Tailwind CSS v4
+  - Lucide React
+  - Prisma ORM (SQLite)
+  - Zod
+  - OpenAI SDK
+  - date-fns
+routes:
+  - path: /
+    file: src/app/page.tsx
+    auth_required: false
+    description: Landing/home page with hero section, pipeline steps, and CTA links
+  - path: /dashboard
+    file: src/app/dashboard/page.tsx
+    auth_required: false
+    description: Dashboard listing all releases with their status, verdict, and risk score
+  - path: /releases/new
+    file: src/app/releases/new/page.tsx
+    auth_required: false
+    description: Form page to create a new release with title, version, owner, and release notes
+  - path: /releases/[id]
+    file: src/app/releases/[id]/page.tsx
+    auth_required: false
+    description: Release detail page showing risks, checklist, approvals, and timeline
+features:
+  - name: Landing Page
+    description: Marketing/landing page showcasing FaultMint with hero section, 4-step pipeline explanation, and CTA buttons
+    files:
+      - src/app/page.tsx
+    entry_route: /
+    user_interactions:
+      - View hero section with product description
+      - Click Open Dashboard button to navigate to /dashboard
+      - Click Create a Release button to navigate to /releases/new
+      - Click Create your first release CTA link
+    api_calls: []
+    auth_required: false
+  - name: Dashboard - Release List
+    description: View all releases ordered by creation date with status badges and risk scores
+    files:
+      - src/app/dashboard/page.tsx
+      - src/components/dashboard/release-list.tsx
+    entry_route: /dashboard
+    user_interactions:
+      - View list of all releases
+      - Click New Release button to navigate to /releases/new
+      - Click on a release card to navigate to release detail page
+    api_calls:
+      - method: GET
+        endpoint: /api/releases
+    auth_required: false
+  - name: Create Release
+    description: Form to create a new release with title, optional version, optional owner, and required release notes
+    files:
+      - src/app/releases/new/page.tsx
+      - src/components/releases/create-release-form.tsx
+    entry_route: /releases/new
+    user_interactions:
+      - Fill in the Title input field (required)
+      - Fill in the Version input field (optional)
+      - Fill in the Owner input field (optional)
+      - Fill in the Release Notes textarea (required)
+      - Click Create and Continue button to submit the form
+      - See field-level validation errors on missing required fields
+      - See error banner on API failure
+      - Click Cancel to go back
+    api_calls:
+      - method: POST
+        endpoint: /api/releases
+    auth_required: false
+  - name: Release Detail View
+    description: Full release detail page showing status, verdict, risk score, release notes, and all sections after analysis
+    files:
+      - src/app/releases/[id]/page.tsx
+      - src/components/releases/release-detail-client.tsx
+    entry_route: /releases/[id]
+    user_interactions:
+      - View release title, version badge, owner, creation date
+      - View status badge and verdict badge
+      - View risk score number
+      - View release notes content
+      - Click Back to Dashboard breadcrumb link
+    api_calls: []
+    auth_required: false
+  - name: AI Analysis
+    description: Trigger AI pre-mortem analysis on release notes to identify risks and generate mitigation checklist
+    files:
+      - src/components/releases/release-detail-client.tsx
+      - src/app/api/releases/[id]/analyze/route.ts
+      - src/lib/analysis/index.ts
+      - src/lib/analysis/mock-analyzer.ts
+      - src/lib/analysis/openai-analyzer.ts
+    entry_route: /releases/[id]
+    user_interactions:
+      - Click Run Analysis button on a DRAFT release
+      - See loading spinner while analysis runs
+      - View analysis results with identified risks and checklist items
+      - Click Re-run Analysis button on already-analyzed release
+    api_calls:
+      - method: POST
+        endpoint: /api/releases/{id}/analyze
+    auth_required: false
+  - name: Risk Management
+    description: View AI-identified risks with severity levels and toggle them as resolved or unresolved
+    files:
+      - src/components/releases/risk-list.tsx
+      - src/components/releases/release-detail-client.tsx
+      - src/app/api/releases/[id]/risks/[riskId]/toggle/route.ts
+    entry_route: /releases/[id]
+    user_interactions:
+      - View list of predicted risks with severity badges (CRITICAL, HIGH, MEDIUM, LOW)
+      - Click toggle button on a risk to mark it as resolved
+      - Click toggle button on a resolved risk to reopen it
+      - View updated risk counts in summary stats
+    api_calls:
+      - method: PATCH
+        endpoint: /api/releases/{id}/risks/{riskId}/toggle
+    auth_required: false
+  - name: Mitigation Checklist
+    description: View and complete mitigation checklist items generated during AI analysis
+    files:
+      - src/components/releases/checklist-section.tsx
+      - src/components/releases/release-detail-client.tsx
+      - src/app/api/releases/[id]/checklist/[itemId]/toggle/route.ts
+    entry_route: /releases/[id]
+    user_interactions:
+      - View mitigation checklist items
+      - Click checkbox to mark a checklist item as completed
+      - Click checkbox to uncheck a completed checklist item
+      - View progress count (X of Y items completed)
+    api_calls:
+      - method: PATCH
+        endpoint: /api/releases/{id}/checklist/{itemId}/toggle
+    auth_required: false
+  - name: Approvals
+    description: Submit and manage approvals from Engineering, QA, and Product roles to gate deployment
+    files:
+      - src/components/releases/approvals-section.tsx
+      - src/components/releases/release-detail-client.tsx
+      - src/app/api/releases/[id]/approvals/route.ts
+    entry_route: /releases/[id]
+    user_interactions:
+      - View approvals section with ENG, QA, and PROD roles
+      - Select approval status (APPROVED or REJECTED) for a role
+      - Add optional comment for the approval
+      - Submit approval and see updated status
+      - View approval count in summary stats
+    api_calls:
+      - method: POST
+        endpoint: /api/releases/{id}/approvals
+    auth_required: false
+  - name: Timeline
+    description: Chronological event log for a release showing all actions taken
+    files:
+      - src/components/releases/timeline-section.tsx
+      - src/components/releases/release-detail-client.tsx
+    entry_route: /releases/[id]
+    user_interactions:
+      - View timeline of release events (created, analyzed, status changes, verdict changes, risk toggles, checklist updates, approvals)
+    api_calls: []
+    auth_required: false
+known_limitations:
+  - issue: No authentication/authorization system - all routes are publicly accessible
+    location: src/app/
+    impact: Any user can create, modify, or delete releases without login
+  - issue: OpenAI analyzer requires OPENAI_API_KEY env variable; falls back to mock analyzer if not set
+    location: src/lib/analysis/index.ts
+    impact: Without API key, analysis uses mock data instead of real AI results

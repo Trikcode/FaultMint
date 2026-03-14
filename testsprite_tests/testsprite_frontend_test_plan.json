@@ -1,0 +1,267 @@
+[
+  {
+    "id": "TC001",
+    "title": "Landing Page Renders Correctly",
+    "description": "Verify the landing page renders hero section, pipeline steps, and CTA links",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Navigate to http://localhost:3000/",
+      "Verify the hero section is visible with the headline 'Know what breaks before it ships'",
+      "Verify the 'Open Dashboard' button is visible",
+      "Verify the 'Create a Release' button is visible",
+      "Verify the 4 pipeline steps are rendered (Paste Release Notes, AI Risk Analysis, Track & Approve, Ship or Block)",
+      "Verify the CTA link 'Create your first release' is visible at the bottom",
+      "Click 'Open Dashboard' and verify navigation to /dashboard",
+      "Navigate back to /",
+      "Click 'Create a Release' and verify navigation to /releases/new"
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Dashboard Empty State",
+    "description": "Verify the dashboard shows an empty state when no releases exist",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      "Navigate to http://localhost:3000/dashboard",
+      "Verify the page heading 'Releases' is visible",
+      "Verify the 'New Release' button is visible in the header",
+      "If no releases exist, verify an empty state message or empty list is shown",
+      "Click 'New Release' button and verify navigation to /releases/new"
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Create Release Form - Field Validation",
+    "description": "Verify the create release form validates required fields correctly",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      "Navigate to http://localhost:3000/releases/new",
+      "Verify the page heading 'Create Release' is visible",
+      "Verify the Title input field is present",
+      "Verify the Version input field is present",
+      "Verify the Owner input field is present",
+      "Verify the Release Notes textarea is present",
+      "Click the 'Create & Continue' button without filling any fields",
+      "Verify a validation error is shown for the Title field",
+      "Verify a validation error is shown for the Release Notes field",
+      "Verify the form does not submit"
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Create Release Form - Successful Submission",
+    "description": "Verify a release can be created successfully and user is redirected",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Navigate to http://localhost:3000/releases/new",
+      "Fill in the Title field with 'Test Release'",
+      "Fill in the Version field with 'v1.0.0'",
+      "Fill in the Owner field with 'Test Owner'",
+      "Fill in the Release Notes textarea with 'Added user authentication and payment gateway migration. Updated webhook endpoints.'",
+      "Click the 'Create & Continue' button",
+      "Verify the button shows loading state",
+      "Verify the page redirects to /releases/[id]",
+      "Verify the release detail page shows the title 'Test Release'",
+      "Verify the status badge shows 'DRAFT'",
+      "Verify the verdict badge shows 'NEEDS ATTENTION'"
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Create Release Form - Cancel Navigation",
+    "description": "Verify the cancel button navigates back",
+    "category": "functional",
+    "priority": "Low",
+    "steps": [
+      "Navigate to http://localhost:3000/releases/new",
+      "Fill in the Title field with 'Cancelled Release'",
+      "Click the 'Cancel' button",
+      "Verify the page navigates away from /releases/new"
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Release Detail - DRAFT State Before Analysis",
+    "description": "Verify the release detail page shows the correct DRAFT empty state before analysis",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Navigate to http://localhost:3000/releases/new",
+      "Fill in the Title field with 'Draft Release Test'",
+      "Fill in the Release Notes textarea with 'Migrated database schema and updated API endpoints'",
+      "Click 'Create & Continue'",
+      "Wait for redirect to /releases/[id]",
+      "Verify the status badge shows 'DRAFT'",
+      "Verify the 'Run Analysis' button is visible",
+      "Verify a 'Ready for analysis' empty state is shown with the Sparkles icon",
+      "Verify no risk items are shown",
+      "Verify no checklist items are shown",
+      "Verify the release notes content is displayed"
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Run Analysis - Triggers Analysis and Shows Results",
+    "description": "Verify clicking Run Analysis triggers the analysis and displays risks and checklist",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Navigate to http://localhost:3000/releases/new",
+      "Fill in the Title field with 'Analysis Test Release'",
+      "Fill in the Release Notes textarea with 'Added payment gateway migration. Updated webhook signature verification. Added retry logic for failed payment captures. Changed subscription billing cycle.'",
+      "Click 'Create & Continue'",
+      "Wait for redirect to /releases/[id]",
+      "Click the 'Run Analysis' button",
+      "Verify the button shows loading state ('Analyzing...')",
+      "Verify a loading spinner card is shown",
+      "Wait for analysis to complete",
+      "Verify the status badge is no longer 'DRAFT'",
+      "Verify the 'Predicted Risks' section is visible with risk items",
+      "Verify each risk has a severity badge (CRITICAL, HIGH, MEDIUM, or LOW)",
+      "Verify the 'Mitigation Checklist' section is visible",
+      "Verify the 'Re-run Analysis' button is now shown instead of 'Run Analysis'",
+      "Verify summary stats are visible (Total Risks, Unresolved, Checklist Done, Approved)"
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Risk Toggle - Mark Risk as Resolved",
+    "description": "Verify risks can be toggled as resolved and risk score updates",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Navigate to http://localhost:3000/releases/new",
+      "Create a release with payment-related release notes",
+      "Click 'Run Analysis' and wait for completion",
+      "Note the initial risk score",
+      "Find an unresolved risk item in the Predicted Risks section",
+      "Click the toggle/resolve button on the risk",
+      "Verify the risk is now marked as resolved (visual change)",
+      "Verify the risk score has decreased or changed",
+      "Verify the unresolved count in summary stats has decreased"
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Checklist Toggle - Complete Checklist Item",
+    "description": "Verify checklist items can be toggled complete and progress updates",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Navigate to http://localhost:3000/releases/new",
+      "Create a release with migration-related release notes",
+      "Click 'Run Analysis' and wait for completion",
+      "Find an incomplete checklist item in the Mitigation Checklist section",
+      "Note the initial checklist progress count",
+      "Click the checkbox to mark the item as complete",
+      "Verify the checklist item is now marked as completed",
+      "Verify the checklist progress count has increased",
+      "Click the checkbox again to uncheck the item",
+      "Verify the item is unchecked and progress decreases"
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Approval Submission - Submit Engineering Approval",
+    "description": "Verify approvals can be submitted for each role",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Navigate to an analyzed release detail page",
+      "Scroll to the Approvals section",
+      "Verify approval cards for ENGINEERING, QA, and PRODUCT roles are visible",
+      "Find the ENGINEERING approval card",
+      "Select 'APPROVED' status",
+      "Optionally add a comment 'Looks good to ship'",
+      "Click submit/approve button",
+      "Verify the ENGINEERING approval shows 'APPROVED' status",
+      "Verify a success toast notification is shown"
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Full Release Approval Flow - READY Verdict",
+    "description": "Verify that resolving all risks, completing checklist, and getting all approvals results in READY verdict",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Create a release with: 'Minor UI update to button colors and text labels'",
+      "Click 'Run Analysis' and wait for completion",
+      "Resolve all risk items by clicking their toggle buttons",
+      "Complete all checklist items by clicking their checkboxes",
+      "Submit APPROVED for ENGINEERING role",
+      "Submit APPROVED for QA role",
+      "Submit APPROVED for PRODUCT role",
+      "Verify the verdict badge changes to 'READY'",
+      "Verify the status badge shows 'READY'"
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Timeline Events Display",
+    "description": "Verify the timeline shows all events in chronological order",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      "Create a new release",
+      "Navigate to the release detail page",
+      "Scroll to the Timeline section",
+      "Verify a CREATED event is shown in the timeline",
+      "Click 'Run Analysis'",
+      "Wait for analysis completion",
+      "Verify an ANALYZED event is added to the timeline",
+      "Toggle a risk item",
+      "Verify a RISK_RESOLVED or RISK_UNRESOLVED event is added",
+      "Toggle a checklist item",
+      "Verify a CHECKLIST_COMPLETED or CHECKLIST_UNCHECKED event is added"
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Re-run Analysis Clears Old Data",
+    "description": "Verify that re-running analysis replaces previous risks and checklist items",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      "Create a release and run analysis",
+      "Note the number of risks and checklist items generated",
+      "Click the 'Re-run Analysis' button",
+      "Wait for analysis to complete",
+      "Verify the risks section is refreshed with new data",
+      "Verify the checklist section is refreshed with new data"
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Dashboard Shows Release Cards with Correct Badges",
+    "description": "Verify the dashboard shows created releases with proper status and verdict badges",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      "Create at least one release via /releases/new",
+      "Navigate to http://localhost:3000/dashboard",
+      "Verify the release appears in the list",
+      "Verify the release title is shown",
+      "Verify a status badge is shown on the release card",
+      "Verify a verdict badge is shown on the release card",
+      "Click on the release card",
+      "Verify navigation to /releases/[id]"
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Back to Dashboard Navigation",
+    "description": "Verify the breadcrumb link on release detail page navigates back to dashboard",
+    "category": "functional",
+    "priority": "Low",
+    "steps": [
+      "Navigate to a release detail page",
+      "Click the 'Back to Dashboard' breadcrumb link",
+      "Verify navigation to /dashboard"
+    ]
+  }
+]

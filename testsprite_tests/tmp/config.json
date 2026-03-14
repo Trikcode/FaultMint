@@ -1,0 +1,20 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "loginUser": "test@trikcode.com",
+  "loginPassword": "Wisepro25*",
+  "executionArgs": {
+    "projectName": "faultmint",
+    "projectPath": "c:\\Users\\HP\\Desktop\\faultmint",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-3A4QxHy1Oe_VprGQD4YdLBz0a0dHBpKnniL89P_1SGLsodrhd5x1GzpxvBNoAu0vMrgX-QOyvyBgQ3u0_MyIgMLlY0NkuFQL-X01pRg-w3pUU8HBCVw-D5fTrkIPalf8ej0"
+    }
+  },
+  "serverPort": 56741,
+  "proxy": "http://d7d8a074-737b-4fef-ba6a-83cb77109ca5:hArsFarOtiN5I1yVNE38Nk2lGG0uJqDf@tun.testsprite.com:8080"
+}

@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Release {
+  id          String         @id @default(cuid())
+  title       String
+  description String         @default("")
+  releaseNotes String
+  status      String         @default("DRAFT")
+  verdict     String         @default("NEEDS_ATTENTION")
+  riskScore   Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  risks       RiskItem[]
+  checklist   ChecklistItem[]
+  approvals   Approval[]
+  timeline    TimelineEvent[]
+}
+
+model RiskItem {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  severity    String
+  resolved    Boolean  @default(false)
+  releaseId   String
+  release     Release  @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ChecklistItem {
+  id          String   @id @default(cuid())
+  title       String
+  completed   Boolean  @default(false)
+  releaseId   String
+  release     Release  @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Approval {
+  id        String   @id @default(cuid())
+  role      String
+  status    String   @default("PENDING")
+  comment   String   @default("")
+  releaseId String
+  release   Release  @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([releaseId, role])
+}
+
+model TimelineEvent {
+  id        String   @id @default(cuid())
+  type      String
+  message   String
+  releaseId String
+  release   Release  @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
